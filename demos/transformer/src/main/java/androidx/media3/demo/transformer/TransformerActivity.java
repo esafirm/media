@@ -62,6 +62,7 @@ import androidx.media3.common.util.Clock;
 import androidx.media3.common.util.Log;
 import androidx.media3.common.util.Util;
 import androidx.media3.datasource.DataSourceBitmapLoader;
+import androidx.media3.demo.transformer.duet.DuetCameraActivity;
 import androidx.media3.effect.BitmapOverlay;
 import androidx.media3.effect.Contrast;
 import androidx.media3.effect.DebugTraceUtil;
@@ -116,8 +117,11 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** An {@link Activity} that exports and plays media using {@link Transformer}. */
+/**
+ * An {@link Activity} that exports and plays media using {@link Transformer}.
+ */
 public final class TransformerActivity extends AppCompatActivity {
+
   private static final String TAG = "TransformerActivity";
   private static final int IMAGE_DURATION_MS = 5_000;
   private static final int IMAGE_FRAME_RATE_FPS = 30;
@@ -140,12 +144,18 @@ public final class TransformerActivity extends AppCompatActivity {
   private Stopwatch exportStopwatch;
   private AspectRatioFrameLayout debugFrame;
 
-  @Nullable private DebugTextViewHelper debugTextViewHelper;
-  @Nullable private ExoPlayer inputPlayer;
-  @Nullable private ExoPlayer outputPlayer;
-  @Nullable private Transformer transformer;
-  @Nullable private File outputFile;
-  @Nullable private File oldOutputFile;
+  @Nullable
+  private DebugTextViewHelper debugTextViewHelper;
+  @Nullable
+  private ExoPlayer inputPlayer;
+  @Nullable
+  private ExoPlayer outputPlayer;
+  @Nullable
+  private Transformer transformer;
+  @Nullable
+  private File outputFile;
+  @Nullable
+  private File oldOutputFile;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -344,7 +354,9 @@ public final class TransformerActivity extends AppCompatActivity {
     return transformerBuilder.build();
   }
 
-  /** Creates a cache file, resetting it if it already exists. */
+  /**
+   * Creates a cache file, resetting it if it already exists.
+   */
   private File createExternalCacheFile(String fileName) throws IOException {
     File file = new File(getExternalCacheDir(), fileName);
     if (file.exists() && !file.delete()) {
@@ -357,6 +369,16 @@ public final class TransformerActivity extends AppCompatActivity {
   }
 
   private Composition createComposition(MediaItem mediaItem, @Nullable Bundle bundle) {
+    if (bundle != null && bundle.containsKey(DuetCameraActivity.BUNDLE_DUET_DATA)) {
+      String[] duetData = bundle.getStringArray(DuetCameraActivity.BUNDLE_DUET_DATA);
+      DuetComposition.SideBySide preset = new DuetComposition.SideBySide(
+          this,
+          MediaItem.fromUri(duetData[0]),
+          MediaItem.fromUri(duetData[1])
+      );
+      return DuetComposition.createP2PComposition(preset);
+    }
+
     EditedMediaItem.Builder editedMediaItemBuilder = new EditedMediaItem.Builder(mediaItem);
     // For image inputs. Automatically ignored if input is audio/video.
     editedMediaItemBuilder.setFrameRate(IMAGE_FRAME_RATE_FPS);
@@ -373,6 +395,7 @@ public final class TransformerActivity extends AppCompatActivity {
     Composition.Builder compositionBuilder =
         new Composition.Builder(
             new EditedMediaItemSequence.Builder(editedMediaItemBuilder.build()).build());
+
     if (bundle != null) {
       compositionBuilder
           .setHdrMode(bundle.getInt(ConfigurationActivity.HDR_MODE))
@@ -501,8 +524,8 @@ public final class TransformerActivity extends AppCompatActivity {
           // uses a linear RGB color space internally. Meaning this is only for demonstration
           // purposes and it does not display a correct sepia frame.
           float[] sepiaMatrix = {
-            0.393f, 0.349f, 0.272f, 0, 0.769f, 0.686f, 0.534f, 0, 0.189f, 0.168f, 0.131f, 0, 0, 0,
-            0, 1
+              0.393f, 0.349f, 0.272f, 0, 0.769f, 0.686f, 0.534f, 0, 0.189f, 0.168f, 0.131f, 0, 0, 0,
+              0, 1
           };
           effects.add((RgbMatrix) (presentationTimeUs, useHdr) -> sepiaMatrix);
           break;
@@ -556,9 +579,9 @@ public final class TransformerActivity extends AppCompatActivity {
                       bundle.getFloat(ConfigurationActivity.PERIODIC_VIGNETTE_CENTER_X),
                       bundle.getFloat(ConfigurationActivity.PERIODIC_VIGNETTE_CENTER_Y),
                       /* minInnerRadius= */ bundle.getFloat(
-                          ConfigurationActivity.PERIODIC_VIGNETTE_INNER_RADIUS),
+                      ConfigurationActivity.PERIODIC_VIGNETTE_INNER_RADIUS),
                       /* maxInnerRadius= */ bundle.getFloat(
-                          ConfigurationActivity.PERIODIC_VIGNETTE_OUTER_RADIUS),
+                      ConfigurationActivity.PERIODIC_VIGNETTE_OUTER_RADIUS),
                       bundle.getFloat(ConfigurationActivity.PERIODIC_VIGNETTE_OUTER_RADIUS)));
     }
     if (selectedEffects[ConfigurationActivity.SPIN_3D_INDEX]) {
@@ -804,7 +827,7 @@ public final class TransformerActivity extends AppCompatActivity {
     String permission = SDK_INT >= 33 ? READ_MEDIA_VIDEO : READ_EXTERNAL_STORAGE;
     if (ActivityCompat.checkSelfPermission(activity, permission)
         != PackageManager.PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(activity, new String[] {permission}, /* requestCode= */ 0);
+      ActivityCompat.requestPermissions(activity, new String[]{permission}, /* requestCode= */ 0);
     }
   }
 
@@ -839,7 +862,8 @@ public final class TransformerActivity extends AppCompatActivity {
 
   private final class DemoDebugViewProvider implements DebugViewProvider {
 
-    @Nullable private SurfaceView surfaceView;
+    @Nullable
+    private SurfaceView surfaceView;
     private int width;
     private int height;
 

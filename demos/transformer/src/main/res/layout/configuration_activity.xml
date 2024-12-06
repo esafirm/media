@@ -90,6 +90,15 @@
         android:layout_weight="1">
         <TextView
           android:layout_gravity="center_vertical"
+          android:text="@string/create_p2p" />
+        <CheckBox
+          android:layout_gravity="end"
+          android:id="@+id/create_p2p_checkbox"/>
+      </TableRow>
+      <TableRow
+        android:layout_weight="1">
+        <TextView
+          android:layout_gravity="center_vertical"
           android:text="@string/remove_audio" />
         <CheckBox
           android:layout_gravity="end"

@@ -61,6 +61,7 @@ import java.util.List;
  * {@link TransformerActivity}.
  */
 public final class ConfigurationActivity extends AppCompatActivity {
+
   public static final String SHOULD_REMOVE_AUDIO = "should_remove_audio";
   public static final String SHOULD_REMOVE_VIDEO = "should_remove_video";
   public static final String SHOULD_FLATTEN_FOR_SLOW_MOTION = "should_flatten_for_slow_motion";
@@ -227,7 +228,7 @@ public final class ConfigurationActivity extends AppCompatActivity {
         view ->
             selectLocalFile(
                 videoLocalFilePickerLauncher,
-                /* mimeTypes= */ new String[] {"image/*", "video/*", "audio/*"}));
+                /* mimeTypes= */ new String[]{"image/*", "video/*", "audio/*"}));
 
     selectedFileTextView = findViewById(R.id.selected_file_text_view);
     presetDescriptions = getResources().getStringArray(R.array.preset_descriptions);
@@ -464,7 +465,7 @@ public final class ConfigurationActivity extends AppCompatActivity {
         != PackageManager.PERMISSION_GRANTED) {
       onPermissionsGranted = () -> launchLocalFilePicker(localFilePickerLauncher, mimeTypes);
       ActivityCompat.requestPermissions(
-          /* activity= */ this, new String[] {permission}, FILE_PERMISSION_REQUEST_CODE);
+          /* activity= */ this, new String[]{permission}, FILE_PERMISSION_REQUEST_CODE);
     } else {
       launchLocalFilePicker(localFilePickerLauncher, mimeTypes);
     }
@@ -679,7 +680,7 @@ public final class ConfigurationActivity extends AppCompatActivity {
     uriButton.setOnClickListener(
         (view ->
             selectLocalFile(
-                overlayLocalFilePickerLauncher, /* mimeTypes= */ new String[] {"image/*"})));
+                overlayLocalFilePickerLauncher, /* mimeTypes= */ new String[]{"image/*"})));
     Slider alphaSlider = dialogView.findViewById(R.id.bitmap_overlay_alpha_slider);
     new AlertDialog.Builder(/* context= */ this)
         .setTitle(R.string.bitmap_overlay_settings)
